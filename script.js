@@ -62,7 +62,7 @@ function update(){
 
 function addCheatButtons(_this){
     removeCheatButtons();
-    
+
     const centerY = _this.cameras.main.centerY;
 
     cheatBanana = _this.add.text(20, centerY - 100, "banana");
@@ -76,6 +76,8 @@ function addCheatButtons(_this){
         } 
         else{
             cheatBanana.text = "✓ banana";
+            cheatCherry.text = "cherry";
+            cheatBlackBerry.text = "blackberry";
             cheatChosen = "banana";
         } 
     });
@@ -91,6 +93,8 @@ function addCheatButtons(_this){
         } 
         else {
             cheatCherry.text = "✓ cherry";
+            cheatBanana.text = "banana";
+            cheatBlackBerry.text = "blackberry";
             cheatChosen = "cherry";
         }
     });
@@ -105,6 +109,8 @@ function addCheatButtons(_this){
             cheatChosen = "";
         } 
         else {
+            cheatCherry.text = "cherry";
+            cheatBanana.text = "banana";
             cheatBlackBerry.text = "✓ blackberry";
             cheatChosen = "blackberry"
         };
@@ -112,6 +118,7 @@ function addCheatButtons(_this){
 }
 
 function removeCheatButtons(){
+    cheatChosen = "";
     cheatBanana?.destroy?.();
     cheatCherry?.destroy?.();
     cheatBlackBerry?.destroy?.();
