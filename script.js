@@ -61,6 +61,8 @@ function update(){
 }
 
 function addCheatButtons(_this){
+    removeCheatButtons();
+    
     const centerY = _this.cameras.main.centerY;
 
     cheatBanana = _this.add.text(20, centerY - 100, "banana");
