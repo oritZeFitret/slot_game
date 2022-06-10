@@ -17,11 +17,12 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
-const spriteScale = .7;
+const spriteScale = 0.7;
 const spriteSize = 256;
 const speed = 1200;
 
-let cheatChosen = [];
+let toolOpen = false;
+let cheatChosen = [0, 0, 0];
 
 let firstColumn = [];
 let secondColumn = [];
@@ -37,11 +38,13 @@ function preload(){
     this.load.image("win", "./assets/win.png");
     this.load.image("reelBackground", "./assets/reelBackground.png");
     this.load.image("reelForeground", "./assets/reelForeground.png");
+    this.load.image("cheatToolBackground", "./assets/cheatToolBackground.png");
+    this.load.image("cheatToolInput", "./assets/cheatToolInput.png");
+    this.load.image("arrow", "./assets/arrow.png");
 }
 
 function create(){
     startNewRoll(this);
-    addCheatButtons(this);
 }
 
 function update(){
@@ -59,16 +62,79 @@ function update(){
     }
 }
 
-function addCheatButtons(_this){
-    removeCheatButtons();
-
-    const centerY = _this.cameras.main.centerY;
-
+function addTools(_this){
+    const scale = spriteScale * 0.75
     
-}
+    _this.cheatToolBk = _this.add.image(224 * scale, (toolOpen ? 130 : -80) * scale, "cheatToolBackground").setScale(scale);
+    _this.arrow = _this.add.image(170 * scale, (toolOpen ? 230 :  20) * scale, "arrow").setScale(scale);
+    _this.toolText = _this.add.text(40 * scale, (toolOpen ? 215 :  5) * scale, "Tools").setStyle({ fontStyle: "bold"});
+    _this.toolPromptText = _this.add.text(20 * scale, (toolOpen ? 20 :  -190) * scale, "SYMBOL POSITION IN THE REEL").setStyle({ fontStyle: "bold", fontSize: 24 * scale});
+    _this.inputBk1 = _this.add.image(70 * scale, (toolOpen ? 90 : -120) * scale, "cheatToolInput").setScale(scale);
+    _this.inputBk2 = _this.add.image(200 * scale,  (toolOpen ? 90 : -120) * scale, "cheatToolInput").setScale(scale);
+    _this.inputBk3 = _this.add.image(330 * scale,  (toolOpen ? 90 : -120) * scale, "cheatToolInput").setScale(scale);
+    _this.input1 = _this.add.text(60 * scale, (toolOpen ? 70 :  -140) * scale, cheatChosen[0]).setScale(scale).setStyle({fontSize: 72 * scale, fontStyle: "bold"});
+    _this.input2 = _this.add.text(190 * scale, (toolOpen ? 70 :  -140) * scale, cheatChosen[1]).setScale(scale).setStyle({fontSize: 72 * scale, fontStyle: "bold"});
+    _this.input3 = _this.add.text(320 * scale, (toolOpen ? 70 :  -140) * scale, cheatChosen[2]).setScale(scale).setStyle({fontSize: 72 * scale, fontStyle: "bold"});
 
-function removeCheatButtons(){
-    
+    function inputHandler(index){
+        switch(index){
+            case 1:
+                cheatChosen[0] = (cheatChosen[0] + 1) % 4;
+                _this.input1.text = cheatChosen[0];
+                break;
+            case 2: 
+                cheatChosen[1] = (cheatChosen[1] + 1) % 4;
+                _this.input2.text = cheatChosen[1];
+                break;
+            case 3:
+                cheatChosen[2] = (cheatChosen[2] + 1) % 4;
+                _this.input3.text = cheatChosen[2];
+                break;
+        }
+    }
+
+    _this.inputBk1.setInteractive({ useHandCursor: true }).on('pointerdown', () => inputHandler(1));
+    _this.inputBk2.setInteractive({ useHandCursor: true }).on('pointerdown', () => inputHandler(2));
+    _this.inputBk3.setInteractive({ useHandCursor: true }).on('pointerdown', () => inputHandler(3));
+
+    function openHandler() {
+        if(!toolOpen){
+            _this.cheatToolBk.setPosition(_this.cheatToolBk.x, _this.cheatToolBk.y + 210 * scale);
+            _this.toolText.setPosition(_this.toolText.x, _this.toolText.y + 210 * scale);
+            _this.arrow.setPosition(_this.arrow.x, _this.arrow.y + 210 * scale);
+            _this.input3.setAngle(0);
+            _this.toolPromptText.setPosition(_this.toolPromptText.x, _this.toolPromptText.y + 210 * scale);
+            _this.inputBk1.setPosition(_this.inputBk1.x, _this.inputBk1.y + 210 * scale);
+            _this.inputBk2.setPosition(_this.inputBk2.x, _this.inputBk2.y + 210 * scale);
+            _this.inputBk3.setPosition(_this.inputBk3.x, _this.inputBk3.y + 210 * scale);
+            _this.input1.setPosition(_this.input1.x, _this.input1.y + 210 * scale);
+            _this.input2.setPosition(_this.input2.x, _this.input2.y + 210 * scale);
+            _this.input3.setPosition(_this.input3.x, _this.input3.y + 210 * scale);
+
+            toolOpen = true;
+        }
+        else{
+            _this.cheatToolBk.setPosition(_this.cheatToolBk.x, _this.cheatToolBk.y - 210 * scale);
+            _this.toolText.setPosition(_this.toolText.x, _this.toolText.y - 210 * scale);
+            _this.arrow.setPosition(_this.arrow.x, _this.arrow.y - 210 * scale);
+            _this.arrow.setAngle(180);
+            _this.toolPromptText.setPosition(_this.toolPromptText.x, _this.toolPromptText.y - 210 * scale);
+            _this.inputBk1.setPosition(_this.inputBk1.x, _this.inputBk1.y - 210 * scale);
+            _this.inputBk2.setPosition(_this.inputBk2.x, _this.inputBk2.y - 210 * scale);
+            _this.inputBk3.setPosition(_this.inputBk3.x, _this.inputBk3.y - 210 * scale);
+            _this.input1.setPosition(_this.input1.x, _this.input1.y - 210 * scale);
+            _this.input2.setPosition(_this.input2.x, _this.input2.y - 210 * scale);
+            _this.input3.setPosition(_this.input3.x, _this.input3.y - 210 * scale);
+
+            toolOpen = false;
+        }
+    }
+    _this.toolText
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', openHandler);
+    _this.arrow
+    .setInteractive({ useHandCursor: true })
+    .on('pointerdown', openHandler);
 }
 
 function addSpinButton(_this){
@@ -76,9 +142,7 @@ function addSpinButton(_this){
     const centerY = _this.cameras.main.centerY;
 
     _this.startButton = _this.add.image(centerX, centerY + spriteSize * 1.2 * spriteScale, "spinGray")
-    .setScale(0.6)
-    .setInteractive({ useHandCursor: true })
-    .on('pointerdown', () => startNewRoll(_this))
+    .setScale(0.6).setInteractive({ useHandCursor: true }).on('pointerdown', () => startNewRoll(_this));
 }
 
 function startNewRoll(_this){
@@ -92,15 +156,13 @@ function startNewRoll(_this){
         _this.startButton?.setTexture("spinGray");
 
         destroyElements(_this);
-        
         fillSlots();
         drawReelBackground(_this);
         addFruits(_this);
         drawMasks(_this);
         drawReelForeground(_this);
         addSpinButton(_this);
-
-        addCheatButtons(_this);
+        addTools(_this);
 
         setTimeout(function(){
             _this.startButton?.setTexture("spin");
@@ -109,7 +171,7 @@ function startNewRoll(_this){
                 _this.bigWin = _this.add.image(centerX, centerY - spriteScale * spriteSize * 1.2, "win")
                 .setScale(spriteScale);
             }
-        }, 3500);
+        }, 4000);
     }
 }
 
@@ -193,10 +255,7 @@ function fillSlots(){
     for(let i = 0; i < firstColumnSize; i++) firstColumn.push(fruits[Math.floor(Math.random() * fruits.length)]);
     for(let i = 0; i < secondColumnSize; i++) secondColumn.push(fruits[Math.floor(Math.random() * fruits.length)]);
     for(let i = 0; i < thirdColumnSize; i++) thirdColumn.push(fruits[Math.floor(Math.random() * fruits.length)]);
-    if(cheatChosen != ""){
-        firstColumn[0] = cheatChosen;
-        secondColumn[0] = cheatChosen;
-        thirdColumn[0] = cheatChosen;
-        cheatChosen = "";
-    }
+    if(cheatChosen[0] > 0) firstColumn[0] = fruits[cheatChosen[0] - 1];
+    if(cheatChosen[1] > 0) secondColumn[0] = fruits[cheatChosen[1] - 1];
+    if(cheatChosen[2] > 0) thirdColumn[0] = fruits[cheatChosen[2] - 1];
 }
