@@ -52,11 +52,13 @@ function update(this: any){
     
     for(let j = 0; j < 3; j++){
         for(let i = 0; i < this.fruits[j].length; i++){
-            if(this.fruits[j][i]?.body?.position?.y >= centerY + spriteScale * spriteSize ||
-            this.fruits[j][i]?.body?.velocity?.y <= 0){
+            if(this.fruits[j][i]?.body?.velocity?.y <= 0){
                 this.fruits[j][i].body.setVelocity(0);
                 this.fruits[j][i].body.setAcceleration(0);
                 this.fruits[j][i].body.allowGravity = false;
+            }
+            if(this.fruits[j][i]?.body?.position?.y >= centerY + spriteScale * spriteSize){
+                this.fruits[j][i].destroy?.();
             }
         }
     }
@@ -68,6 +70,7 @@ function addTools(_this: any): void{
     
     _this.cheatToolBk = _this.add.image(224 * scale, (toolOpen ? 130 : -80) * scale, "cheatToolBackground").setScale(scale);
     _this.arrow = _this.add.image(170 * scale, (toolOpen ? 230 :  20) * scale, "arrow").setScale(scale);
+    _this.arrow.setAngle(toolOpen ? 180 : 0);
     _this.toolText = _this.add.text(40 * scale, (toolOpen ? 215 :  5) * scale, "Tools").setStyle({ fontStyle: "bold"});
     _this.toolPromptText = _this.add.text(20 * scale, (toolOpen ? 20 :  -190) * scale, "SYMBOL POSITION IN THE REEL").setStyle({ fontStyle: "bold", fontSize: 24 * scale});
     _this.inputBk1 = _this.add.image(70 * scale, (toolOpen ? 90 : -120) * scale, "cheatToolInput").setScale(scale);
@@ -103,7 +106,7 @@ function addTools(_this: any): void{
             _this.cheatToolBk.setPosition(_this.cheatToolBk.x, _this.cheatToolBk.y + 210 * scale);
             _this.toolText.setPosition(_this.toolText.x, _this.toolText.y + 210 * scale);
             _this.arrow.setPosition(_this.arrow.x, _this.arrow.y + 210 * scale);
-            _this.input3.setAngle(0);
+            _this.arrow.setAngle(180);
             _this.toolPromptText.setPosition(_this.toolPromptText.x, _this.toolPromptText.y + 210 * scale);
             _this.inputBk1.setPosition(_this.inputBk1.x, _this.inputBk1.y + 210 * scale);
             _this.inputBk2.setPosition(_this.inputBk2.x, _this.inputBk2.y + 210 * scale);
@@ -118,7 +121,7 @@ function addTools(_this: any): void{
             _this.cheatToolBk.setPosition(_this.cheatToolBk.x, _this.cheatToolBk.y - 210 * scale);
             _this.toolText.setPosition(_this.toolText.x, _this.toolText.y - 210 * scale);
             _this.arrow.setPosition(_this.arrow.x, _this.arrow.y - 210 * scale);
-            _this.arrow.setAngle(180);
+            _this.arrow.setAngle(0);
             _this.toolPromptText.setPosition(_this.toolPromptText.x, _this.toolPromptText.y - 210 * scale);
             _this.inputBk1.setPosition(_this.inputBk1.x, _this.inputBk1.y - 210 * scale);
             _this.inputBk2.setPosition(_this.inputBk2.x, _this.inputBk2.y - 210 * scale);
@@ -139,7 +142,7 @@ function addTools(_this: any): void{
 }
 
 function removeTools(_this: any): void{
-    _this.cheatToolB?.destroy?.();
+    _this.cheatToolBk?.destroy?.();
     _this.arrow?.destroy?.();
     _this.toolText?.destroy?.();
     _this.toolPromptText?.destroy?.();
@@ -208,9 +211,6 @@ function drawReelBackground(_this: any): void{
 
 function addFruits(_this: any): void{
     _this.fruits = [[], [], []];
-    // _this.fruits[0] = [];
-    // _this.fruits[1] = [];
-    // _this.fruits[2] = [];
     const centerX: number = _this.cameras.main.centerX;
     const centerY: number = _this.cameras.main.centerY;
 
@@ -253,7 +253,9 @@ function destroyElements(_this: any): void{
 
 function destroyFruits(_this: any): void{
     for(let i = 0; i < _this.fruits?.length; i++){
-        _this.fruits[i].destroy?.();
+        for(let j = 0; j < _this.fruits[i].length; j++){
+            _this.fruits[i][j].destroy?.();
+        }
     }
 }
 
